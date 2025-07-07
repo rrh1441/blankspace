@@ -27,8 +27,8 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     // Load data from localStorage
-    const savedImages = localStorage.getItem('previewImages')
-    const savedTier = localStorage.getItem('selectedTier')
+    const savedImages = typeof window !== 'undefined' ? localStorage.getItem('previewImages') : null
+    const savedTier = typeof window !== 'undefined' ? localStorage.getItem('selectedTier') : null
     
     if (savedImages) {
       setPreviewImages(JSON.parse(savedImages))
@@ -97,7 +97,9 @@ export default function CheckoutPage() {
       
       if (demoMode) {
         // Demo mode: redirect directly to success page
-        window.location.href = `/checkout/success?session_id=${sessionId}&demo=true`
+        if (typeof window !== 'undefined') {
+          window.location.href = `/checkout/success?session_id=${sessionId}&demo=true`
+        }
         return
       }
       
@@ -129,7 +131,11 @@ export default function CheckoutPage() {
           </CardHeader>
           <CardContent>
             <Button
-              onClick={() => window.location.href = '/preview'}
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.location.href = '/preview'
+                }
+              }}
               className="w-full"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -148,7 +154,11 @@ export default function CheckoutPage() {
         <div className="flex items-center gap-4 mb-8">
           <Button
             variant="outline"
-            onClick={() => window.history.back()}
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.history.back()
+              }
+            }}
             className="border-2 border-black"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />

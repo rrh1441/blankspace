@@ -65,7 +65,9 @@ export function Pricing() {
   const handleSelectTier = (tierId: string) => {
     setSelectedTier(tierId)
     // Navigate to upload page with selected tier
-    window.location.href = `/preview?tier=${tierId}`
+    if (typeof window !== 'undefined') {
+      window.location.href = `/preview?tier=${tierId}`
+    }
   }
 
   return (

@@ -84,11 +84,15 @@ function PreviewPageContent() {
     if (completedImages.length === 0) return
     
     // Store preview data in localStorage for checkout
-    localStorage.setItem('previewImages', JSON.stringify(completedImages))
-    localStorage.setItem('selectedTier', tier)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('previewImages', JSON.stringify(completedImages))
+      localStorage.setItem('selectedTier', tier)
+    }
     
     // Navigate to checkout
-    window.location.href = '/checkout'
+    if (typeof window !== 'undefined') {
+      window.location.href = '/checkout'
+    }
   }
 
   const getTierInfo = () => {
@@ -114,7 +118,11 @@ function PreviewPageContent() {
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
-              onClick={() => window.history.back()}
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.history.back()
+                }
+              }}
               className="border-2 border-black"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />

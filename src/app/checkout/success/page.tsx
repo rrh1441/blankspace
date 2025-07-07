@@ -35,8 +35,8 @@ function SuccessPageContent() {
 
   const createOrder = async () => {
     try {
-      const savedImages = localStorage.getItem('previewImages')
-      const savedTier = localStorage.getItem('selectedTier')
+      const savedImages = typeof window !== 'undefined' ? localStorage.getItem('previewImages') : null
+      const savedTier = typeof window !== 'undefined' ? localStorage.getItem('selectedTier') : null
       
       if (!savedImages || !savedTier) {
         setOrderStatus('error')
