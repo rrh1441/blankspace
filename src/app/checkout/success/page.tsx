@@ -1,18 +1,21 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { CheckCircle, Download, Mail, Home, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-export default function SuccessPage() {
+function SuccessPageContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id')
   
   const [orderStatus, setOrderStatus] = useState<'processing' | 'completed' | 'error'>('processing')
-  const [orderDetails, setOrderDetails] = useState<any>(null)
+  const [orderDetails, setOrderDetails] = useState<{
+    orderId: string;
+    message: string;
+  } | null>(null)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
 
   useEffect(() => {
@@ -27,6 +30,7 @@ export default function SuccessPage() {
       
       return () => clearInterval(pollInterval)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId])
 
   const createOrder = async () => {
@@ -134,7 +138,7 @@ export default function SuccessPage() {
                       <div>
                         <h3 className="font-semibold text-lg">Creating Your Coloring Book</h3>
                         <p className="text-gray-600">
-                          We're transforming your photos into beautiful coloring pages. This usually takes 5-10 minutes.
+                          We&apos;re transforming your photos into beautiful coloring pages. This usually takes 5-10 minutes.
                         </p>
                       </div>
                     </>
@@ -226,7 +230,7 @@ export default function SuccessPage() {
                   <div>
                     <h4 className="font-semibold text-blue-700 mb-1">Check Your Email</h4>
                     <p className="text-sm text-blue-600">
-                      We've sent a confirmation email with your download link. 
+                      We&apos;ve sent a confirmation email with your download link. 
                       You can also bookmark this page to access your coloring book later.
                     </p>
                   </div>
@@ -242,7 +246,7 @@ export default function SuccessPage() {
                       <h4 className="font-semibold text-yellow-700 mb-1">Please Wait</h4>
                       <p className="text-sm text-yellow-600">
                         Keep this page open while we create your coloring book. 
-                        We'll automatically refresh when it's ready.
+                        We&apos;ll automatically refresh when it&apos;s ready.
                       </p>
                     </div>
                   </div>
@@ -253,5 +257,13 @@ export default function SuccessPage() {
         </motion.div>
       </div>
     </div>
+  )
+}
+
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SuccessPageContent />
+    </Suspense>
   )
 }

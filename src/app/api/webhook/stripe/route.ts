@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { supabase } from '@/lib/supabase'
-import { sendEmail } from '@/lib/resend'
 
 export async function POST(request: NextRequest) {
   try {

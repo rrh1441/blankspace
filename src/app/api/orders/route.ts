@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     // Create order in database
     const orderId = `order_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`
     
-    const { data: order, error: orderError } = await supabase
+    const { error: orderError } = await supabase
       .from('orders')
       .insert([
         {

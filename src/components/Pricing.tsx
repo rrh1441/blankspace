@@ -186,7 +186,7 @@ export function Pricing() {
                 <p className="text-gray-600 text-sm">Yes! Our PDFs are print-ready and optimized for home printing.</p>
               </div>
               <div>
-                <h4 className="font-semibold mb-2">What if I'm not satisfied?</h4>
+                <h4 className="font-semibold mb-2">What if I&apos;m not satisfied?</h4>
                 <p className="text-gray-600 text-sm">We offer a 30-day money-back guarantee.</p>
               </div>
             </div>

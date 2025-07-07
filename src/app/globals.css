@@ -6,10 +6,6 @@
     --font-amatic: 'Amatic SC', cursive;
     
     /* Colors */
-    --black: #000000;
-    --white: #FFFFFF;
-    --gray-light: #F5F5F5;
-    --gray-medium: #E0E0E0;
     --accent-primary: #FF6B6B;
     --accent-secondary: #4ECDC4;
     --accent-tertiary: #FFE66D;
@@ -20,8 +16,14 @@
   }
   
   h1, h2, h3 {
-    @apply font-amatic;
+    font-family: var(--font-amatic);
   }
+}
+
+@theme {
+  --color-accent-primary: #FF6B6B;
+  --color-accent-secondary: #4ECDC4;
+  --color-accent-tertiary: #FFE66D;
 }
 
 @layer components {

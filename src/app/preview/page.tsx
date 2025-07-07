@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { ImageUploader } from '@/components/ImageUploader'
@@ -16,7 +16,7 @@ interface PreviewImage {
   status: 'processing' | 'completed' | 'failed'
 }
 
-export default function PreviewPage() {
+function PreviewPageContent() {
   const searchParams = useSearchParams()
   const tier = searchParams.get('tier') || 'premium'
   
@@ -227,5 +227,13 @@ export default function PreviewPage() {
         </motion.div>
       </div>
     </div>
+  )
+}
+
+export default function PreviewPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PreviewPageContent />
+    </Suspense>
   )
 }

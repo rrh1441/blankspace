@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Eye, Download, ArrowLeft, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -22,7 +22,6 @@ interface PreviewSliderProps {
 export function PreviewSlider({ images, onProceedToCheckout }: PreviewSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isFullscreen, setIsFullscreen] = useState(false)
-  const sliderRef = useRef<HTMLDivElement>(null)
 
   const completedImages = images.filter(img => img.status === 'completed')
   const processingImages = images.filter(img => img.status === 'processing')
@@ -177,6 +176,7 @@ export function PreviewSlider({ images, onProceedToCheckout }: PreviewSliderProp
               index === currentIndex ? 'border-accent-primary' : 'border-gray-200'
             }`}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={image.previewUrl}
               alt={`Preview ${index + 1}`}
@@ -227,7 +227,7 @@ export function PreviewSlider({ images, onProceedToCheckout }: PreviewSliderProp
                   Still Processing {processingImages.length} Image{processingImages.length !== 1 ? 's' : ''}
                 </h4>
                 <p className="text-sm text-yellow-600">
-                  Your remaining images will appear here as they're completed.
+                  Your remaining images will appear here as they&apos;re completed.
                 </p>
               </div>
             </div>
@@ -253,7 +253,7 @@ export function PreviewSlider({ images, onProceedToCheckout }: PreviewSliderProp
                   {failedImages.length} Image{failedImages.length !== 1 ? 's' : ''} Failed to Process
                 </h4>
                 <p className="text-sm text-red-600">
-                  These images couldn't be converted. Try uploading different photos.
+                  These images couldn&apos;t be converted. Try uploading different photos.
                 </p>
               </div>
             </div>

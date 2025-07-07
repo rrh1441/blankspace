@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { useDropzone } from 'react-dropzone'
+import { useDropzone, FileRejection } from 'react-dropzone'
 import { Upload, X, Image as ImageIcon, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -21,7 +21,7 @@ export function ImageUploader({ maxFiles = 24, onUpload, tier }: ImageUploaderPr
   const [files, setFiles] = useState<ImageFile[]>([])
   const [uploadError, setUploadError] = useState<string | null>(null)
 
-  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
+  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
     setUploadError(null)
     
     if (rejectedFiles.length > 0) {
@@ -169,6 +169,7 @@ export function ImageUploader({ maxFiles = 24, onUpload, tier }: ImageUploaderPr
                 className="relative group"
               >
                 <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200 hover:border-accent-primary transition-colors">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={file.preview}
                     alt={`Preview ${index + 1}`}

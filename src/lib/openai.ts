@@ -13,7 +13,7 @@ export const generateColoring = async (imageUrl: string, prompt: string) => {
     n: 1,
   })
 
-  return response.data[0].url
+  return response.data?.[0]?.url || null
 }
 
 export const getOpenAIClient = () => {

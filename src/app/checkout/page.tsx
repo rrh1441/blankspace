@@ -201,6 +201,7 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-4 gap-2">
                   {previewImages.slice(0, 8).map((image, index) => (
                     <div key={image.id} className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={image.previewUrl}
                         alt={`Preview ${index + 1}`}
@@ -240,7 +241,7 @@ export default function CheckoutPage() {
                     className="mt-1"
                   />
                   <p className="text-sm text-gray-600 mt-1">
-                    We'll send your coloring book download link to this email
+                    We&apos;ll send your coloring book download link to this email
                   </p>
                 </div>
 
@@ -283,7 +284,7 @@ export default function CheckoutPage() {
                     <div>
                       <h4 className="font-semibold">Secure Payment</h4>
                       <p className="text-sm text-gray-600">
-                        Your payment is protected by Stripe's industry-leading security
+                        Your payment is protected by Stripe&apos;s industry-leading security
                       </p>
                     </div>
                   </div>
