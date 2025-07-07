@@ -8,6 +8,14 @@ export async function POST(request: NextRequest) {
     if (!tier || !email || !imageCount) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
+
+    // Demo mode: return a fake session ID if Stripe is not configured
+    if (!stripe) {
+      return NextResponse.json({ 
+        sessionId: 'demo_session_' + Date.now(),
+        demoMode: true 
+      })
+    }
     
     // Define pricing
     const pricing = {

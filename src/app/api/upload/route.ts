@@ -29,6 +29,18 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
     
+    // Demo mode: skip Supabase upload if not configured
+    if (!supabase) {
+      return NextResponse.json({
+        success: true,
+        fileName: uniqueFileName,
+        publicUrl: `https://via.placeholder.com/800x600/cccccc/333333?text=${encodeURIComponent(file.name)}`,
+        size: file.size,
+        type: file.type,
+        demoMode: true
+      })
+    }
+
     // Upload to Supabase Storage
     const { error } = await supabase.storage
       .from('uploads')

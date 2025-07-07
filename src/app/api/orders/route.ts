@@ -10,6 +10,18 @@ export async function POST(request: NextRequest) {
     if (!sessionId) {
       return NextResponse.json({ error: 'Session ID required' }, { status: 400 })
     }
+
+    // Demo mode: skip Stripe verification if not configured
+    if (!stripe || sessionId.startsWith('demo_session_')) {
+      const orderId = `demo_order_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`
+      
+      return NextResponse.json({ 
+        success: true,
+        orderId,
+        message: 'Demo order created successfully',
+        demoMode: true
+      })
+    }
     
     // Verify Stripe session
     const session = await stripe.checkout.sessions.retrieve(sessionId)
@@ -21,25 +33,29 @@ export async function POST(request: NextRequest) {
     // Create order in database
     const orderId = `order_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`
     
-    const { error: orderError } = await supabase
-      .from('orders')
-      .insert([
-        {
-          id: orderId,
-          user_email: session.customer_email,
-          tier: tier,
-          status: 'processing',
-          image_data: imageData,
-          stripe_session_id: sessionId,
-          created_at: new Date().toISOString()
-        }
-      ])
-      .select()
-      .single()
-    
-    if (orderError) {
-      console.error('Order creation error:', orderError)
-      return NextResponse.json({ error: 'Failed to create order' }, { status: 500 })
+    if (supabase) {
+      const { error: orderError } = await supabase
+        .from('orders')
+        .insert([
+          {
+            id: orderId,
+            user_email: session.customer_email,
+            tier: tier,
+            status: 'processing',
+            image_data: imageData,
+            stripe_session_id: sessionId,
+            created_at: new Date().toISOString()
+          }
+        ])
+        .select()
+        .single()
+      
+      if (orderError) {
+        console.error('Order creation error:', orderError)
+        return NextResponse.json({ error: 'Failed to create order' }, { status: 500 })
+      }
+    } else {
+      console.log('Demo mode: Order would be created:', orderId)
     }
     
     // Send confirmation email

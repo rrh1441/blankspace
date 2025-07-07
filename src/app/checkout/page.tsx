@@ -93,7 +93,13 @@ export default function CheckoutPage() {
         throw new Error('Failed to create checkout session')
       }
       
-      const { sessionId } = await response.json()
+      const { sessionId, demoMode } = await response.json()
+      
+      if (demoMode) {
+        // Demo mode: redirect directly to success page
+        window.location.href = `/checkout/success?session_id=${sessionId}&demo=true`
+        return
+      }
       
       // Redirect to Stripe checkout
       const { error } = await stripe.redirectToCheckout({

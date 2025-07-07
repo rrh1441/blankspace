@@ -16,20 +16,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid email format' }, { status: 400 })
     }
     
-    // Store email in Supabase
-    const { error: dbError } = await supabase
-      .from('email_subscribers')
-      .insert([
-        { 
-          email, 
-          subscribed_at: new Date().toISOString(),
-          source: 'sample_download'
-        }
-      ])
-    
-    if (dbError && dbError.code !== '23505') { // Ignore duplicate email errors
-      console.error('Database error:', dbError)
-      return NextResponse.json({ error: 'Failed to subscribe' }, { status: 500 })
+    // Store email in Supabase (skip if not configured)
+    if (supabase) {
+      const { error: dbError } = await supabase
+        .from('email_subscribers')
+        .insert([
+          { 
+            email, 
+            subscribed_at: new Date().toISOString(),
+            source: 'sample_download'
+          }
+        ])
+      
+      if (dbError && dbError.code !== '23505') { // Ignore duplicate email errors
+        console.error('Database error:', dbError)
+        return NextResponse.json({ error: 'Failed to subscribe' }, { status: 500 })
+      }
+    } else {
+      console.log('Demo mode: Email subscription for:', email)
     }
     
     // Send welcome email

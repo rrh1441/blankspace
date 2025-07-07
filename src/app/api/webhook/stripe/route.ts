@@ -4,6 +4,11 @@ import { supabase } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
+    // Demo mode: skip webhook processing if Stripe is not configured
+    if (!stripe) {
+      return NextResponse.json({ received: true, demoMode: true })
+    }
+
     const body = await request.text()
     const sig = request.headers.get('stripe-signature')
     
@@ -25,16 +30,18 @@ export async function POST(request: NextRequest) {
         const session = event.data.object
         
         // Update order status
-        const { error: updateError } = await supabase
-          .from('orders')
-          .update({ 
-            status: 'paid',
-            stripe_payment_intent_id: session.payment_intent 
-          })
-          .eq('stripe_session_id', session.id)
-        
-        if (updateError) {
-          console.error('Failed to update order status:', updateError)
+        if (supabase) {
+          const { error: updateError } = await supabase
+            .from('orders')
+            .update({ 
+              status: 'paid',
+              stripe_payment_intent_id: session.payment_intent 
+            })
+            .eq('stripe_session_id', session.id)
+          
+          if (updateError) {
+            console.error('Failed to update order status:', updateError)
+          }
         }
         
         break
@@ -49,13 +56,15 @@ export async function POST(request: NextRequest) {
         const paymentIntent = event.data.object
         
         // Update order status to failed
-        const { error: failError } = await supabase
-          .from('orders')
-          .update({ status: 'failed' })
-          .eq('stripe_payment_intent_id', paymentIntent.id)
-        
-        if (failError) {
-          console.error('Failed to update order status:', failError)
+        if (supabase) {
+          const { error: failError } = await supabase
+            .from('orders')
+            .update({ status: 'failed' })
+            .eq('stripe_payment_intent_id', paymentIntent.id)
+          
+          if (failError) {
+            console.error('Failed to update order status:', failError)
+          }
         }
         
         break
