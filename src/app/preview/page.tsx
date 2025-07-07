@@ -18,7 +18,7 @@ interface PreviewImage {
 
 function PreviewPageContent() {
   const searchParams = useSearchParams()
-  const tier = searchParams.get('tier') || 'premium'
+  const tier = searchParams.get('tier') || 'digital'
   
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [previewImages, setPreviewImages] = useState<PreviewImage[]>([])
@@ -97,14 +97,12 @@ function PreviewPageContent() {
 
   const getTierInfo = () => {
     switch (tier) {
-      case 'basic':
-        return { name: 'Basic', maxPhotos: 5, price: 9.99 }
-      case 'premium':
-        return { name: 'Premium', maxPhotos: 15, price: 19.99 }
-      case 'deluxe':
-        return { name: 'Deluxe', maxPhotos: 25, price: 29.99 }
+      case 'digital':
+        return { name: 'Digital Download', maxPhotos: 24, price: 19 }
+      case 'printed':
+        return { name: 'Printed & Shipped', maxPhotos: 24, price: 29 }
       default:
-        return { name: 'Premium', maxPhotos: 15, price: 19.99 }
+        return { name: 'Digital Download', maxPhotos: 24, price: 19 }
     }
   }
 

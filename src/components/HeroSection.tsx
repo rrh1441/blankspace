@@ -14,8 +14,8 @@ export function HeroSection() {
   const [convertedImage, setConvertedImage] = useState<string | null>(null)
 
   // Default demo images
-  const defaultOriginal = 'https://images.unsplash.com/photo-1544568100-847a948585b9?w=800&h=600&fit=crop'
-  const defaultConverted = 'https://via.placeholder.com/800x600/ffffff/000000?text=Demo+Coloring+Page'
+  const defaultOriginal = '/y2o.JPG'
+  const defaultConverted = '/y2.png'
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return
@@ -27,7 +27,7 @@ export function HeroSection() {
     
     // Simulate processing
     setTimeout(() => {
-      setConvertedImage('https://via.placeholder.com/800x600/ffffff/000000?text=Your+Coloring+Page')
+      setConvertedImage('/y2.png')
       setIsProcessing(false)
     }, 3000)
   }, [])

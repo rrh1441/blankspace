@@ -2,65 +2,50 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Check, Star, Crown, Sparkles } from 'lucide-react'
+import { Check, Star, Crown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 const tiers = [
   {
-    id: 'basic',
-    name: 'Basic',
-    price: 9.99,
-    maxPhotos: 5,
+    id: 'digital',
+    name: 'Digital Download',
+    price: 19,
+    deliveryTime: 'Instant',
     icon: Star,
-    popular: false,
-    features: [
-      'Up to 5 photos',
-      'High-quality line art conversion',
-      'PDF download',
-      'Print-ready format',
-      'Email support'
-    ]
-  },
-  {
-    id: 'premium',
-    name: 'Premium',
-    price: 19.99,
-    maxPhotos: 15,
-    icon: Crown,
     popular: true,
     features: [
-      'Up to 15 photos',
+      'Up to 24 photos',
       'High-quality line art conversion',
-      'PDF download',
-      'Print-ready format',
+      'Instant PDF download',
+      'Print-ready format (8.5" x 11")',
       'Custom cover page',
-      'Priority processing',
+      'Ready for home printing',
       'Email support'
     ]
   },
   {
-    id: 'deluxe',
-    name: 'Deluxe',
-    price: 29.99,
-    maxPhotos: 25,
-    icon: Sparkles,
+    id: 'printed',
+    name: 'Printed & Shipped',
+    price: 29,
+    deliveryTime: '2 weeks',
+    icon: Crown,
     popular: false,
     features: [
-      'Up to 25 photos',
+      'Up to 24 photos',
       'High-quality line art conversion',
-      'PDF download',
-      'Print-ready format',
+      'Professional printing',
+      'Premium paper quality',
+      'Spiral-bound coloring book',
       'Custom cover page',
-      'Multiple page layouts',
-      'Priority processing',
-      'Phone & email support'
+      'Free shipping included',
+      'Email support'
     ]
   }
 ]
 
 export function Pricing() {
-  const [selectedTier, setSelectedTier] = useState('premium')
+  const [selectedTier, setSelectedTier] = useState('digital')
 
   const handleSelectTier = (tierId: string) => {
     setSelectedTier(tierId)
@@ -88,7 +73,7 @@ export function Pricing() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {tiers.map((tier, index) => (
             <motion.div
               key={tier.id}
@@ -130,7 +115,7 @@ export function Pricing() {
                   </div>
                   
                   <CardDescription className="text-base">
-                    Perfect for {tier.maxPhotos} photos
+                    Delivery: {tier.deliveryTime}
                   </CardDescription>
                 </CardHeader>
 

@@ -8,7 +8,7 @@ export interface PreviewImage {
 export interface Order {
   id: string;
   userEmail: string;
-  tier: 'basic' | 'premium' | 'deluxe';
+  tier: 'digital' | 'printed';
   status: 'pending' | 'processing' | 'completed' | 'failed';
   imageKeys: string[];
   createdAt: string;
@@ -19,7 +19,7 @@ export interface PricingTier {
   id: string;
   name: string;
   price: number;
-  maxPhotos: number;
+  deliveryTime: string;
   features: string[];
-  stripeProductId: string;
+  stripeProductId?: string;
 }

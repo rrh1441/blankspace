@@ -20,7 +20,7 @@ interface PreviewImage {
 
 export default function CheckoutPage() {
   const [previewImages, setPreviewImages] = useState<PreviewImage[]>([])
-  const [selectedTier, setSelectedTier] = useState('premium')
+  const [selectedTier, setSelectedTier] = useState('digital')
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -41,14 +41,12 @@ export default function CheckoutPage() {
 
   const getTierInfo = () => {
     switch (selectedTier) {
-      case 'basic':
-        return { name: 'Basic', price: 9.99, maxPhotos: 5 }
-      case 'premium':
-        return { name: 'Premium', price: 19.99, maxPhotos: 15 }
-      case 'deluxe':
-        return { name: 'Deluxe', price: 29.99, maxPhotos: 25 }
+      case 'digital':
+        return { name: 'Digital Download', price: 19, maxPhotos: 24 }
+      case 'printed':
+        return { name: 'Printed & Shipped', price: 29, maxPhotos: 24 }
       default:
-        return { name: 'Premium', price: 19.99, maxPhotos: 15 }
+        return { name: 'Digital Download', price: 19, maxPhotos: 24 }
     }
   }
 

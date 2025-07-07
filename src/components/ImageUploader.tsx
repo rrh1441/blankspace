@@ -70,9 +70,8 @@ export function ImageUploader({ maxFiles = 24, onUpload, tier }: ImageUploaderPr
 
   const getTierLimit = () => {
     switch (tier) {
-      case 'basic': return 5
-      case 'premium': return 15
-      case 'deluxe': return 25
+      case 'digital': return 24
+      case 'printed': return 24
       default: return maxFiles
     }
   }

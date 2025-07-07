@@ -19,9 +19,8 @@ export async function POST(request: NextRequest) {
     
     // Define pricing
     const pricing = {
-      basic: { price: 999, name: 'Basic Plan' }, // $9.99 in cents
-      premium: { price: 1999, name: 'Premium Plan' }, // $19.99 in cents
-      deluxe: { price: 2999, name: 'Deluxe Plan' } // $29.99 in cents
+      digital: { price: 1900, name: 'Digital Download' }, // $19.00 in cents
+      printed: { price: 2900, name: 'Printed & Shipped' } // $29.00 in cents
     }
     
     const selectedPlan = pricing[tier as keyof typeof pricing]
