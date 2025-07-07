@@ -1,26 +1,68 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --font-inter: 'Inter', sans-serif;
+    --font-amatic: 'Amatic SC', cursive;
+    
+    /* Colors */
+    --black: #000000;
+    --white: #FFFFFF;
+    --gray-light: #F5F5F5;
+    --gray-medium: #E0E0E0;
+    --accent-primary: #FF6B6B;
+    --accent-secondary: #4ECDC4;
+    --accent-tertiary: #FFE66D;
+  }
+  
+  body {
+    @apply font-sans bg-white text-black;
+  }
+  
+  h1, h2, h3 {
+    @apply font-amatic;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .btn-primary {
+    @apply 
+      px-6 py-3 
+      border-2 border-black 
+      bg-white 
+      font-medium 
+      transition-all 
+      hover:bg-accent-primary 
+      hover:-translate-y-0.5 
+      hover:shadow-[4px_4px_0_0_#000]
+      active:translate-y-0
+      active:shadow-none;
+  }
+  
+  .section-border {
+    @apply 
+      border-2 border-black 
+      bg-white 
+      p-8 
+      relative
+      before:content-['']
+      before:absolute
+      before:inset-[-8px]
+      before:border
+      before:border-black
+      before:opacity-20;
+  }
+}
+
+/* Animations */
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-draw {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw-line 2s ease-out forwards;
 }
