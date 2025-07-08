@@ -100,7 +100,7 @@ function PreviewPageContent() {
       case 'digital':
         return { name: 'Digital Download', maxPhotos: 24, price: 19 }
       case 'printed':
-        return { name: 'Printed & Shipped', maxPhotos: 24, price: 29 }
+        return { name: 'Printed & Shipped', maxPhotos: 24, price: 34 }
       default:
         return { name: 'Digital Download', maxPhotos: 24, price: 19 }
     }

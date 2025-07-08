@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Upload, ArrowRight, Sparkles, X } from 'lucide-react'
+import { Upload, ArrowRight, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useDropzone } from 'react-dropzone'
@@ -174,18 +174,6 @@ export function HeroSection() {
             transition={{ duration: 0.8 }}
             className="text-left"
           >
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="inline-flex items-center gap-2 bg-accent-primary/10 border-2 border-accent-primary/20 px-4 py-2 rounded-full mb-8"
-            >
-              <Sparkles className="w-4 h-4 text-accent-primary" />
-              <span className="text-sm font-medium text-accent-primary">
-                AI-Powered Magic
-              </span>
-            </motion.div>
 
             {/* Main Heading */}
             <motion.h1

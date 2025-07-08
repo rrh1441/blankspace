@@ -27,7 +27,7 @@ const tiers = [
   {
     id: 'printed',
     name: 'Printed & Shipped',
-    price: 29,
+    price: 34,
     deliveryTime: '2 weeks',
     icon: Crown,
     popular: false,
@@ -36,8 +36,9 @@ const tiers = [
       'High-quality line art conversion',
       'Professional printing',
       'Premium paper quality',
-      'Spiral-bound coloring book',
+      'Saddle-stitched coloring book',
       'Custom cover page',
+      'Digital download included',
       'Free shipping included',
       'Email support'
     ]
@@ -174,7 +175,7 @@ export function Pricing() {
               </div>
               <div>
                 <h4 className="font-semibold mb-2">What if I&apos;m not satisfied?</h4>
-                <p className="text-gray-600 text-sm">We offer a 30-day money-back guarantee.</p>
+                <p className="text-gray-600 text-sm">We offer a 30-day money-back guarantee for digital downloads.</p>
               </div>
             </div>
           </div>
