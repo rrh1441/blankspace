@@ -9,83 +9,91 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft, Upload, Wand2, Download } from 'lucide-react'
 
-interface PreviewImage {
+interface UploadedImage {
   id: string
-  originalUrl: string
-  previewUrl: string
-  status: 'processing' | 'completed' | 'failed'
+  file: File
+  url: string
+  type: 'cover' | 'inside'
 }
+
+interface CoverDesign {
+  id: string
+  name: string
+  frontTemplate: string
+  backTemplate: string
+  previewUrl: string
+}
+
+const coverDesigns: CoverDesign[] = [
+  {
+    id: 'classic',
+    name: 'Classic',
+    frontTemplate: '/covers/classic-front.jpg',
+    backTemplate: '/covers/classic-back.jpg',
+    previewUrl: '/covers/classic-preview.jpg'
+  },
+  {
+    id: 'modern',
+    name: 'Modern',
+    frontTemplate: '/covers/modern-front.jpg',
+    backTemplate: '/covers/modern-back.jpg',
+    previewUrl: '/covers/modern-preview.jpg'
+  },
+  {
+    id: 'playful',
+    name: 'Playful',
+    frontTemplate: '/covers/playful-front.jpg',
+    backTemplate: '/covers/playful-back.jpg',
+    previewUrl: '/covers/playful-preview.jpg'
+  }
+]
 
 function PreviewPageContent() {
   const searchParams = useSearchParams()
   const tier = searchParams.get('tier') || 'digital'
   
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
-  const [previewImages, setPreviewImages] = useState<PreviewImage[]>([])
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [currentStep, setCurrentStep] = useState<'upload' | 'preview' | 'checkout'>('upload')
+  const [coverImages, setCoverImages] = useState<UploadedImage[]>([])
+  const [insideImages, setInsideImages] = useState<UploadedImage[]>([])
+  const [selectedCover, setSelectedCover] = useState<CoverDesign>(coverDesigns[0])
+  const [coverTitle, setCoverTitle] = useState('My Coloring Book')
+  const [currentStep, setCurrentStep] = useState<'upload' | 'covers' | 'checkout'>('upload')
 
-  const handleFileUpload = (files: File[]) => {
-    setUploadedFiles(files)
+  const handleCoverUpload = (files: File[]) => {
+    const newCoverImages: UploadedImage[] = files.slice(0, 2).map((file, index) => ({
+      id: `cover-${Date.now()}-${index}`,
+      file,
+      url: URL.createObjectURL(file),
+      type: 'cover'
+    }))
+    setCoverImages(newCoverImages)
   }
 
-  const handleStartProcessing = async () => {
-    if (uploadedFiles.length === 0) return
-    
-    setIsProcessing(true)
-    setCurrentStep('preview')
-    
-    // Initialize preview images with processing status
-    const initialPreviews: PreviewImage[] = uploadedFiles.map((file, index) => ({
-      id: `preview-${index}`,
-      originalUrl: URL.createObjectURL(file),
-      previewUrl: '',
-      status: 'processing' as const
+  const handleInsideUpload = (files: File[]) => {
+    const tierInfo = getTierInfo()
+    const newInsideImages: UploadedImage[] = files.slice(0, tierInfo.maxPhotos).map((file, index) => ({
+      id: `inside-${Date.now()}-${index}`,
+      file,
+      url: URL.createObjectURL(file),
+      type: 'inside'
     }))
-    
-    setPreviewImages(initialPreviews)
-    
-    // Process each image
-    for (let i = 0; i < uploadedFiles.length; i++) {
-      try {
-        const file = uploadedFiles[i]
-        const formData = new FormData()
-        formData.append('file', file)
-        
-        const response = await fetch('/api/preview', {
-          method: 'POST',
-          body: formData,
-        })
-        
-        if (response.ok) {
-          const { previewUrl } = await response.json()
-          
-          setPreviewImages(prev => prev.map((img, index) => 
-            index === i ? { ...img, previewUrl, status: 'completed' } : img
-          ))
-        } else {
-          setPreviewImages(prev => prev.map((img, index) => 
-            index === i ? { ...img, status: 'failed' } : img
-          ))
-        }
-      } catch (error) {
-        console.error('Error processing image:', error)
-        setPreviewImages(prev => prev.map((img, index) => 
-          index === i ? { ...img, status: 'failed' } : img
-        ))
-      }
-    }
-    
-    setIsProcessing(false)
+    setInsideImages(newInsideImages)
+  }
+
+  const handleProceedToCovers = () => {
+    if (insideImages.length === 0) return
+    setCurrentStep('covers')
   }
 
   const handleProceedToCheckout = () => {
-    const completedImages = previewImages.filter(img => img.status === 'completed')
-    if (completedImages.length === 0) return
-    
-    // Store preview data in localStorage for checkout
+    // Store data in localStorage for checkout
     if (typeof window !== 'undefined') {
-      localStorage.setItem('previewImages', JSON.stringify(completedImages))
+      localStorage.setItem('coverImages', JSON.stringify(coverImages))
+      localStorage.setItem('insideImages', JSON.stringify(insideImages.map(img => ({
+        id: img.id,
+        url: img.url
+      }))))
+      localStorage.setItem('selectedCover', JSON.stringify(selectedCover))
+      localStorage.setItem('coverTitle', coverTitle)
       localStorage.setItem('selectedTier', tier)
     }
     
@@ -140,15 +148,15 @@ function PreviewPageContent() {
           <div className="flex items-center justify-center gap-8">
             {[
               { step: 'upload', icon: Upload, label: 'Upload Photos' },
-              { step: 'preview', icon: Wand2, label: 'Preview & Edit' },
-              { step: 'checkout', icon: Download, label: 'Download Book' }
+              { step: 'covers', icon: Wand2, label: 'Design Cover' },
+              { step: 'checkout', icon: Download, label: 'Complete Order' }
             ].map(({ step, icon: Icon, label }, index) => (
               <div key={step} className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${
                     currentStep === step 
                       ? 'bg-accent-primary border-accent-primary text-white' 
-                      : index < ['upload', 'preview', 'checkout'].indexOf(currentStep)
+                      : index < ['upload', 'covers', 'checkout'].indexOf(currentStep)
                       ? 'bg-green-500 border-green-500 text-white'
                       : 'border-gray-300 text-gray-400'
                   }`}>
@@ -162,7 +170,7 @@ function PreviewPageContent() {
                 </div>
                 {index < 2 && (
                   <div className={`w-16 h-px ${
-                    index < ['upload', 'preview', 'checkout'].indexOf(currentStep)
+                    index < ['upload', 'covers', 'checkout'].indexOf(currentStep)
                       ? 'bg-green-500'
                       : 'bg-gray-300'
                   }`} />
@@ -180,53 +188,146 @@ function PreviewPageContent() {
           transition={{ duration: 0.5 }}
         >
           {currentStep === 'upload' && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Upload Your Photos</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ImageUploader
-                  maxFiles={tierInfo.maxPhotos}
-                  onUpload={handleFileUpload}
-                  tier={tier}
-                />
-                
-                {uploadedFiles.length > 0 && (
-                  <div className="mt-6 flex justify-center">
-                    <Button
-                      onClick={handleStartProcessing}
-                      disabled={isProcessing}
-                      size="lg"
-                      className="btn-primary text-lg px-8 py-6 group"
-                    >
-                      {isProcessing ? (
-                        <>
-                          <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2" />
-                          Processing...
-                        </>
-                      ) : (
-                        <>
+            <div className="space-y-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Upload Cover Photos (Optional)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 mb-4">
+                    Upload 1-2 photos for your front and back cover. Leave blank to use our template designs.
+                  </p>
+                  <ImageUploader
+                    maxFiles={2}
+                    onUpload={handleCoverUpload}
+                    tier={tier}
+                  />
+                  {coverImages.length > 0 && (
+                    <div className="grid grid-cols-2 gap-4 mt-4">
+                      {coverImages.map((img, index) => (
+                        <div key={img.id} className="relative">
+                          <img src={img.url} alt={`Cover ${index + 1}`} className="w-full h-32 object-cover rounded" />
+                          <span className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 text-xs rounded">
+                            {index === 0 ? 'Front' : 'Back'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Upload Inside Page Photos</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 mb-4">
+                    Upload up to {tierInfo.maxPhotos} photos that will become coloring pages.
+                  </p>
+                  <ImageUploader
+                    maxFiles={tierInfo.maxPhotos}
+                    onUpload={handleInsideUpload}
+                    tier={tier}
+                  />
+                  {insideImages.length > 0 && (
+                    <div className="mt-6">
+                      <p className="text-sm text-gray-600 mb-4">
+                        {insideImages.length} photo{insideImages.length !== 1 ? 's' : ''} selected for inside pages
+                      </p>
+                      <div className="grid grid-cols-6 gap-2">
+                        {insideImages.map((img) => (
+                          <img key={img.id} src={img.url} alt="Inside page" className="w-full h-16 object-cover rounded" />
+                        ))}
+                      </div>
+                      <div className="mt-6 flex justify-center">
+                        <Button
+                          onClick={handleProceedToCovers}
+                          size="lg"
+                          className="btn-primary text-lg px-8 py-6 group"
+                        >
                           <Wand2 className="w-5 h-5 mr-2" />
-                          Start Creating ({uploadedFiles.length} photo{uploadedFiles.length !== 1 ? 's' : ''})
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                          Design Cover ({insideImages.length} photo{insideImages.length !== 1 ? 's' : ''})
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           )}
 
-          {currentStep === 'preview' && (
+          {currentStep === 'covers' && (
             <Card>
               <CardHeader>
-                <CardTitle>Preview Your Coloring Pages</CardTitle>
+                <CardTitle>Design Your Cover</CardTitle>
               </CardHeader>
               <CardContent>
-                <PreviewSlider
-                  images={previewImages}
-                  onProceedToCheckout={handleProceedToCheckout}
-                />
+                <div className="grid lg:grid-cols-2 gap-8">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Choose Cover Style</h3>
+                    <div className="grid grid-cols-1 gap-4">
+                      {coverDesigns.map((design) => (
+                        <button
+                          key={design.id}
+                          onClick={() => setSelectedCover(design)}
+                          className={`p-4 border-2 rounded-lg text-left transition-all ${
+                            selectedCover.id === design.id
+                              ? 'border-accent-primary bg-accent-primary/5'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <div className="flex items-center gap-4">
+                            <img src={design.previewUrl} alt={design.name} className="w-16 h-20 object-cover rounded" />
+                            <div>
+                              <h4 className="font-medium">{design.name}</h4>
+                              <p className="text-sm text-gray-600">Cover template style</p>
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="mt-6">
+                      <label className="block text-sm font-medium mb-2">Cover Title</label>
+                      <input
+                        type="text"
+                        value={coverTitle}
+                        onChange={(e) => setCoverTitle(e.target.value)}
+                        className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-accent-primary"
+                        placeholder="My Coloring Book"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Cover Preview</h3>
+                    <div className="bg-gray-100 rounded-lg p-6 text-center">
+                      <div className="relative inline-block">
+                        <img src={selectedCover.previewUrl} alt="Cover preview" className="w-48 h-60 object-cover rounded-lg shadow-lg" />
+                        <div className="absolute bottom-4 left-4 right-4 bg-white/90 p-2 rounded">
+                          <p className="font-bold text-sm">{coverTitle}</p>
+                        </div>
+                      </div>
+                      {coverImages.length > 0 && (
+                        <p className="text-sm text-gray-600 mt-4">
+                          Your uploaded photos will be integrated with this design
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-8 flex justify-center">
+                  <Button
+                    onClick={handleProceedToCheckout}
+                    size="lg"
+                    className="btn-primary text-lg px-8 py-6 group"
+                  >
+                    <Download className="w-5 h-5 mr-2" />
+                    Complete Order
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           )}

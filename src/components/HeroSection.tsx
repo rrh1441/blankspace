@@ -34,6 +34,22 @@ function CustomImageSlider({ beforeImage, afterImage, beforeLabel, afterLabel }:
     setIsDragging(false)
   }
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true)
+    updateSliderPositionTouch(e)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (isDragging) {
+      e.preventDefault()
+      updateSliderPositionTouch(e)
+    }
+  }
+
+  const handleTouchEnd = () => {
+    setIsDragging(false)
+  }
+
   const updateSliderPosition = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect()
     const x = e.clientX - rect.left
@@ -41,13 +57,24 @@ function CustomImageSlider({ beforeImage, afterImage, beforeLabel, afterLabel }:
     setSliderPosition(Math.max(0, Math.min(100, percentage)))
   }
 
+  const updateSliderPositionTouch = (e: React.TouchEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const touch = e.touches[0]
+    const x = touch.clientX - rect.left
+    const percentage = (x / rect.width) * 100
+    setSliderPosition(Math.max(0, Math.min(100, percentage)))
+  }
+
   return (
     <div
-      className="relative w-full h-full cursor-ew-resize select-none"
+      className="relative w-full h-full cursor-ew-resize select-none touch-pan-x"
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {/* After image (background) */}
       <div className="absolute inset-0">
