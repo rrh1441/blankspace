@@ -135,7 +135,7 @@ export function HowItWorks() {
         >
           <div className="bg-gray-50 rounded-2xl p-8 border-2 border-gray-200">
             <h3 className="text-2xl font-bold mb-4">
-              See What You'll Get
+              See What You&apos;ll Get
             </h3>
             <p className="text-gray-600 mb-6">
               Download our sample coloring book to see the amazing quality and detail of our AI-generated line art.
