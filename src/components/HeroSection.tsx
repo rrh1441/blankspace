@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Upload, ArrowRight, Sparkles, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,7 @@ export function HeroSection() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [convertedImage, setConvertedImage] = useState<string | null>(null)
   const [showUploadModal, setShowUploadModal] = useState(false)
+  const [imagesLoaded, setImagesLoaded] = useState(false)
 
   // Default demo images - same image for both sides
   const defaultOriginal = '/y2o.JPG'
@@ -46,6 +47,32 @@ export function HeroSection() {
 
   const currentOriginal = uploadedImage || defaultOriginal
   const currentConverted = convertedImage || defaultConverted
+
+  // Preload images and check if they exist
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const originalImg = new Image()
+        const convertedImg = new Image()
+        
+        originalImg.onload = () => console.log('Original image loaded:', defaultOriginal)
+        originalImg.onerror = () => console.error('Failed to load original image:', defaultOriginal)
+        
+        convertedImg.onload = () => {
+          console.log('Converted image loaded:', defaultConverted)
+          setImagesLoaded(true)
+        }
+        convertedImg.onerror = () => console.error('Failed to load converted image:', defaultConverted)
+        
+        originalImg.src = defaultOriginal
+        convertedImg.src = defaultConverted
+      } catch (error) {
+        console.error('Error loading images:', error)
+      }
+    }
+    
+    loadImages()
+  }, [])
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-white to-gray-50 py-20 relative overflow-hidden">
@@ -168,7 +195,7 @@ export function HeroSection() {
                   </p>
                 </div>
 
-                <div className="relative aspect-[4/3] rounded-lg overflow-hidden">
+                <div className="relative aspect-[2/3] rounded-lg overflow-hidden max-w-md mx-auto">
                   {isProcessing ? (
                     <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
                       <div className="text-center">
@@ -176,17 +203,36 @@ export function HeroSection() {
                         <p className="text-sm text-gray-600">Converting to coloring page...</p>
                       </div>
                     </div>
+                  ) : !imagesLoaded ? (
+                    <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="animate-spin w-8 h-8 border-4 border-accent-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                        <p className="text-sm text-gray-600">Loading demo images...</p>
+                        <p className="text-xs text-gray-500 mt-2">
+                          Original: {currentOriginal}<br/>
+                          Converted: {currentConverted}
+                        </p>
+                      </div>
+                    </div>
                   ) : (
-                    <ReactCompareImage
-                      leftImage={currentOriginal}
-                      rightImage={currentConverted}
-                      leftImageLabel="Original"
-                      rightImageLabel="Coloring Page"
-                      sliderLineColor="#FF6B6B"
-                      sliderLineWidth={3}
-                      handleSize={40}
-                      hover={true}
-                    />
+                    <div className="w-full h-full">
+                      <ReactCompareImage
+                        leftImage={currentOriginal}
+                        rightImage={currentConverted}
+                        leftImageLabel="Original"
+                        rightImageLabel="Coloring Page"
+                        sliderLineColor="#FF6B6B"
+                        sliderLineWidth={3}
+                        handleSize={40}
+                        hover={true}
+                        onSliderPositionChange={(position) => {
+                          console.log('Slider position:', position)
+                        }}
+                        onError={(error) => {
+                          console.error('ReactCompareImage error:', error)
+                        }}
+                      />
+                    </div>
                   )}
                 </div>
 
