@@ -1,21 +1,107 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Upload, ArrowRight, Sparkles, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useDropzone } from 'react-dropzone'
-import ReactCompareImage from 'react-compare-image'
+
+interface CustomImageSliderProps {
+  beforeImage: string
+  afterImage: string
+  beforeLabel: string
+  afterLabel: string
+}
+
+function CustomImageSlider({ beforeImage, afterImage, beforeLabel, afterLabel }: CustomImageSliderProps) {
+  const [sliderPosition, setSliderPosition] = useState(50)
+  const [isDragging, setIsDragging] = useState(false)
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true)
+    updateSliderPosition(e)
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging) {
+      updateSliderPosition(e)
+    }
+  }
+
+  const handleMouseUp = () => {
+    setIsDragging(false)
+  }
+
+  const updateSliderPosition = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const percentage = (x / rect.width) * 100
+    setSliderPosition(Math.max(0, Math.min(100, percentage)))
+  }
+
+  return (
+    <div
+      className="relative w-full h-full cursor-ew-resize select-none"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+    >
+      {/* After image (background) */}
+      <div className="absolute inset-0">
+        <img
+          src={afterImage}
+          alt={afterLabel}
+          className="w-full h-full object-cover"
+          draggable={false}
+        />
+      </div>
+
+      {/* Before image (foreground with clip) */}
+      <div 
+        className="absolute inset-0 overflow-hidden"
+        style={{
+          clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)`
+        }}
+      >
+        <img
+          src={beforeImage}
+          alt={beforeLabel}
+          className="w-full h-full object-cover"
+          draggable={false}
+        />
+      </div>
+
+      {/* Slider line */}
+      <div
+        className="absolute top-0 bottom-0 w-1 bg-white shadow-lg"
+        style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
+      >
+        {/* Slider handle */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg border-2 border-accent-primary flex items-center justify-center">
+          <div className="w-1 h-4 bg-accent-primary rounded-full"></div>
+        </div>
+      </div>
+
+      {/* Labels */}
+      <div className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
+        {beforeLabel}
+      </div>
+      <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
+        {afterLabel}
+      </div>
+    </div>
+  )
+}
 
 export function HeroSection() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [convertedImage, setConvertedImage] = useState<string | null>(null)
   const [showUploadModal, setShowUploadModal] = useState(false)
-  const [imagesLoaded, setImagesLoaded] = useState(false)
 
-  // Default demo images - same image for both sides
+  // Default demo images
   const defaultOriginal = '/y2o.JPG'
   const defaultConverted = '/y2.png'
 
@@ -47,32 +133,6 @@ export function HeroSection() {
 
   const currentOriginal = uploadedImage || defaultOriginal
   const currentConverted = convertedImage || defaultConverted
-
-  // Preload images and check if they exist
-  useEffect(() => {
-    const loadImages = async () => {
-      try {
-        const originalImg = new Image()
-        const convertedImg = new Image()
-        
-        originalImg.onload = () => console.log('Original image loaded:', defaultOriginal)
-        originalImg.onerror = () => console.error('Failed to load original image:', defaultOriginal)
-        
-        convertedImg.onload = () => {
-          console.log('Converted image loaded:', defaultConverted)
-          setImagesLoaded(true)
-        }
-        convertedImg.onerror = () => console.error('Failed to load converted image:', defaultConverted)
-        
-        originalImg.src = defaultOriginal
-        convertedImg.src = defaultConverted
-      } catch (error) {
-        console.error('Error loading images:', error)
-      }
-    }
-    
-    loadImages()
-  }, [])
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-white to-gray-50 py-20 relative overflow-hidden">
@@ -195,7 +255,7 @@ export function HeroSection() {
                   </p>
                 </div>
 
-                <div className="relative aspect-[2/3] rounded-lg overflow-hidden max-w-md mx-auto">
+                <div className="relative w-full max-w-sm mx-auto rounded-lg overflow-hidden" style={{ aspectRatio: '3/4' }}>
                   {isProcessing ? (
                     <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
                       <div className="text-center">
@@ -203,33 +263,13 @@ export function HeroSection() {
                         <p className="text-sm text-gray-600">Converting to coloring page...</p>
                       </div>
                     </div>
-                  ) : !imagesLoaded ? (
-                    <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="animate-spin w-8 h-8 border-4 border-accent-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-                        <p className="text-sm text-gray-600">Loading demo images...</p>
-                        <p className="text-xs text-gray-500 mt-2">
-                          Original: {currentOriginal}<br/>
-                          Converted: {currentConverted}
-                        </p>
-                      </div>
-                    </div>
                   ) : (
-                    <div className="w-full h-full">
-                      <ReactCompareImage
-                        leftImage={currentOriginal}
-                        rightImage={currentConverted}
-                        leftImageLabel="Original"
-                        rightImageLabel="Coloring Page"
-                        sliderLineColor="#FF6B6B"
-                        sliderLineWidth={3}
-                        handleSize={40}
-                        hover={true}
-                        onSliderPositionChange={(position) => {
-                          console.log('Slider position:', position)
-                        }}
-                      />
-                    </div>
+                    <CustomImageSlider
+                      beforeImage={currentOriginal}
+                      afterImage={currentConverted}
+                      beforeLabel="Original"
+                      afterLabel="Coloring Page"
+                    />
                   )}
                 </div>
 
