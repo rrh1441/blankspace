@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Upload, ArrowRight, Download, Sparkles } from 'lucide-react'
+import { Upload, ArrowRight, Sparkles, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useDropzone } from 'react-dropzone'
@@ -12,8 +12,9 @@ export function HeroSection() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [convertedImage, setConvertedImage] = useState<string | null>(null)
+  const [showUploadModal, setShowUploadModal] = useState(false)
 
-  // Default demo images
+  // Default demo images - same image for both sides
   const defaultOriginal = '/y2o.JPG'
   const defaultConverted = '/y2.png'
 
@@ -24,6 +25,7 @@ export function HeroSection() {
     const imageUrl = URL.createObjectURL(file)
     setUploadedImage(imageUrl)
     setIsProcessing(true)
+    setShowUploadModal(false)
     
     // Simulate processing
     setTimeout(() => {
@@ -127,41 +129,13 @@ export function HeroSection() {
               Because your pictures deserve more than cloud storage
             </motion.h2>
 
-            {/* Upload Area */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-              className="mb-8"
-            >
-              <div
-                {...getRootProps()}
-                className={`
-                  border-3 border-dashed border-gray-300 bg-white p-8 rounded-xl
-                  transition-all cursor-pointer relative
-                  hover:border-accent-primary hover:bg-accent-primary/5
-                  ${isDragActive ? 'border-accent-primary bg-accent-primary/10' : ''}
-                `}
-              >
-                <input {...getInputProps()} />
-                <div className="text-center">
-                  <Upload className="w-8 h-8 mx-auto mb-4 text-gray-400" />
-                  <p className="text-lg font-medium mb-2">
-                    {isDragActive ? 'Drop your photo here!' : 'Try it with your own photo'}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Drop a photo here or click to browse • JPG or PNG • Max 15MB
-                  </p>
-                </div>
-              </div>
-            </motion.div>
 
             {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.9 }}
-              className="flex flex-col sm:flex-row gap-4"
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="flex justify-center sm:justify-start"
             >
               <Button
                 size="lg"
@@ -174,20 +148,6 @@ export function HeroSection() {
               >
                 Create Full Coloring Book
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="text-lg px-8 py-4 border-2 border-black hover:bg-gray-50"
-                onClick={() => {
-                  const element = document.getElementById('download-section')
-                  if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' })
-                  }
-                }}
-              >
-                <Download className="w-5 h-5 mr-2" />
-                Download Sample
               </Button>
             </motion.div>
           </motion.div>
@@ -230,13 +190,61 @@ export function HeroSection() {
                   )}
                 </div>
 
-                <div className="mt-4 text-center">
-                  <p className="text-xs text-gray-500">
-                    Drag the slider to compare • {uploadedImage ? 'Upload your own photo above to test' : 'This is a demo - upload your own!'}
+                <div className="mt-4 flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowUploadModal(true)}
+                    className="border-2 border-black hover:bg-accent-primary hover:text-white"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Try with your own photo
+                  </Button>
+                  <p className="text-xs text-gray-500 text-center">
+                    Drag the slider to compare original vs coloring page
                   </p>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Upload Modal */}
+            {showUploadModal && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-lg p-6 max-w-md w-full">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-bold">Upload Your Photo</h3>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowUploadModal(false)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  
+                  <div
+                    {...getRootProps()}
+                    className={`
+                      border-3 border-dashed border-gray-300 bg-white p-8 rounded-xl
+                      transition-all cursor-pointer relative
+                      hover:border-accent-primary hover:bg-accent-primary/5
+                      ${isDragActive ? 'border-accent-primary bg-accent-primary/10' : ''}
+                    `}
+                  >
+                    <input {...getInputProps()} />
+                    <div className="text-center">
+                      <Upload className="w-8 h-8 mx-auto mb-4 text-gray-400" />
+                      <p className="text-lg font-medium mb-2">
+                        {isDragActive ? 'Drop your photo here!' : 'Drop photo here or click to browse'}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        JPG or PNG • Max 15MB
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Floating Elements */}
             <motion.div
