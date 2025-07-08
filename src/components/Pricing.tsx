@@ -20,26 +20,8 @@ const tiers = [
       'Print-ready format (8.5" x 11")',
       'Custom cover page',
       'Ready for home printing',
-      'Email support'
-    ]
-  },
-  {
-    id: 'printed',
-    name: 'Printed & Shipped',
-    price: 34,
-    deliveryTime: '2 weeks',
-    icon: Crown,
-    popular: false,
-    features: [
-      'Up to 24 photos',
-      'High-quality line art conversion',
-      'Professional printing',
-      'Premium paper quality',
-      'Saddle-stitched coloring book',
-      'Custom cover page',
-      'Digital download included',
-      'Free shipping included',
-      'Email support'
+      'Email support',
+      '30-day money-back guarantee'
     ]
   }
 ]
@@ -71,7 +53,7 @@ export function Pricing() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="flex justify-center max-w-2xl mx-auto">
           {tiers.map((tier, index) => (
             <motion.div
               key={tier.id}
@@ -201,7 +183,7 @@ export function Pricing() {
               </div>
               <div>
                 <h4 className="font-semibold mb-2">What if I&apos;m not satisfied?</h4>
-                <p className="text-gray-600 text-sm">We offer a 30-day money-back guarantee for digital downloads.</p>
+                <p className="text-gray-600 text-sm">We offer a 30-day money-back guarantee.</p>
               </div>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
-import { sendEmail } from '@/lib/resend'
+// import { sendEmail } from '@/lib/resend'
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,7 +36,8 @@ export async function POST(request: NextRequest) {
       console.log('Demo mode: Email subscription for:', email)
     }
     
-    // Send welcome email
+    // Send welcome email (commented out for now)
+    /*
     try {
       await sendEmail(
         email,
@@ -63,6 +64,7 @@ export async function POST(request: NextRequest) {
       console.error('Email sending error:', emailError)
       // Don't fail the request if email fails
     }
+    */
     
     return NextResponse.json({ success: true })
     

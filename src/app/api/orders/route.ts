@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
-import { supabase } from '@/lib/supabase'
-import { sendEmail } from '@/lib/resend'
+import { getSupabaseAdmin } from '@/lib/supabase'
+// import { sendEmail } from '@/lib/resend'
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,7 +33,8 @@ export async function POST(request: NextRequest) {
     // Create order in database
     const orderId = `order_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`
     
-    if (supabase) {
+    try {
+      const supabase = getSupabaseAdmin()
       const { error: orderError } = await supabase
         .from('orders')
         .insert([
@@ -54,11 +55,12 @@ export async function POST(request: NextRequest) {
         console.error('Order creation error:', orderError)
         return NextResponse.json({ error: 'Failed to create order' }, { status: 500 })
       }
-    } else {
-      console.log('Demo mode: Order would be created:', orderId)
+    } catch (supabaseError) {
+      console.log('Demo mode: Order would be created:', orderId, supabaseError)
     }
     
-    // Send confirmation email
+    // Send confirmation email (commented out for now)
+    /*
     try {
       await sendEmail(
         session.customer_email!,
@@ -87,6 +89,7 @@ export async function POST(request: NextRequest) {
       console.error('Email sending error:', emailError)
       // Don't fail the request if email fails
     }
+    */
     
     // TODO: Queue PDF generation job
     // This would typically be done with a background job queue

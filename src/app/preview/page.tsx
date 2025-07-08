@@ -104,14 +104,7 @@ function PreviewPageContent() {
   }
 
   const getTierInfo = () => {
-    switch (tier) {
-      case 'digital':
-        return { name: 'Digital Download', maxPhotos: 24, price: 19 }
-      case 'printed':
-        return { name: 'Printed & Shipped', maxPhotos: 24, price: 34 }
-      default:
-        return { name: 'Digital Download', maxPhotos: 24, price: 19 }
-    }
+    return { name: 'Digital Download', maxPhotos: 24, price: 19 }
   }
 
   const tierInfo = getTierInfo()

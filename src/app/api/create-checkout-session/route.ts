@@ -17,33 +17,18 @@ export async function POST(request: NextRequest) {
       })
     }
     
-    // Define pricing
-    const pricing = {
-      digital: { price: 1900, name: 'Digital Download' }, // $19.00 in cents
-      printed: { price: 2900, name: 'Printed & Shipped' } // $29.00 in cents
+    // Only support digital tier now
+    if (tier !== 'digital') {
+      return NextResponse.json({ error: 'Only digital downloads are available' }, { status: 400 })
     }
     
-    const selectedPlan = pricing[tier as keyof typeof pricing]
-    
-    if (!selectedPlan) {
-      return NextResponse.json({ error: 'Invalid tier' }, { status: 400 })
-    }
-    
-    // Create Stripe checkout session
+    // Create Stripe checkout session using your predefined price ID
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       customer_email: email,
       line_items: [
         {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `${selectedPlan.name} - Coloring Book`,
-              description: `${imageCount} personalized coloring pages`,
-              images: ['https://your-domain.com/logo.png'], // Add your logo URL
-            },
-            unit_amount: selectedPlan.price,
-          },
+          price: 'price_1RikRxKSaqiJUYkjSYLD93VS', // Your Stripe price ID
           quantity: 1,
         },
       ],
