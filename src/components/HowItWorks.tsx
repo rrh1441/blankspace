@@ -104,7 +104,7 @@ export function HowItWorks() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="btn-primary text-2xl px-12 py-6 group"
+            className="btn-primary text-2xl px-12 py-6 group whitespace-nowrap inline-flex items-center"
             onClick={() => {
               if (typeof window !== 'undefined') {
                 window.location.href = '/preview'
