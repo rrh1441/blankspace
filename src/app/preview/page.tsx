@@ -59,16 +59,19 @@ function PreviewPageContent() {
   const [currentStep, setCurrentStep] = useState<'upload' | 'covers' | 'checkout'>('upload')
 
   const handleCoverUpload = (files: File[]) => {
+    console.log('Cover upload called with files:', files)
     const newCoverImages: UploadedImage[] = files.slice(0, 2).map((file, index) => ({
       id: `cover-${Date.now()}-${index}`,
       file,
       url: URL.createObjectURL(file),
       type: 'cover'
     }))
+    console.log('Setting cover images:', newCoverImages)
     setCoverImages(newCoverImages)
   }
 
   const handleInsideUpload = (files: File[]) => {
+    console.log('Inside upload called with files:', files)
     const tierInfo = getTierInfo()
     const newInsideImages: UploadedImage[] = files.slice(0, tierInfo.maxPhotos).map((file, index) => ({
       id: `inside-${Date.now()}-${index}`,
@@ -76,6 +79,7 @@ function PreviewPageContent() {
       url: URL.createObjectURL(file),
       type: 'inside'
     }))
+    console.log('Setting inside images:', newInsideImages)
     setInsideImages(newInsideImages)
   }
 
@@ -190,6 +194,10 @@ function PreviewPageContent() {
                   <p className="text-gray-600 mb-4">
                     Upload 1-2 photos for your front and back cover. Leave blank to use our template designs.
                   </p>
+                  {/* Debug info */}
+                  <div className="text-xs text-gray-500 mb-2">
+                    Debug: Cover images count: {coverImages.length}
+                  </div>
                   <ImageUploader
                     maxFiles={2}
                     onUpload={handleCoverUpload}
@@ -199,7 +207,7 @@ function PreviewPageContent() {
                     <div className="grid grid-cols-2 gap-4 mt-4">
                       {coverImages.map((img, index) => (
                         <div key={img.id} className="relative">
-                          <Image src={img.url} alt={`Cover ${index + 1}`} width={200} height={128} className="w-full h-32 object-cover rounded" />
+                          <img src={img.url} alt={`Cover ${index + 1}`} className="w-full h-32 object-cover rounded" />
                           <span className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 text-xs rounded">
                             {index === 0 ? 'Front' : 'Back'}
                           </span>
@@ -218,6 +226,10 @@ function PreviewPageContent() {
                   <p className="text-gray-600 mb-4">
                     Upload up to {tierInfo.maxPhotos} photos that will become coloring pages.
                   </p>
+                  {/* Debug info */}
+                  <div className="text-xs text-gray-500 mb-2">
+                    Debug: Inside images count: {insideImages.length}
+                  </div>
                   <ImageUploader
                     maxFiles={tierInfo.maxPhotos}
                     onUpload={handleInsideUpload}
@@ -230,7 +242,7 @@ function PreviewPageContent() {
                       </p>
                       <div className="grid grid-cols-6 gap-2">
                         {insideImages.map((img) => (
-                          <Image key={img.id} src={img.url} alt="Inside page" width={64} height={64} className="w-full h-16 object-cover rounded" />
+                          <img key={img.id} src={img.url} alt="Inside page" className="w-full h-16 object-cover rounded" />
                         ))}
                       </div>
                       <div className="mt-6 flex justify-center">

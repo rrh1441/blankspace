@@ -43,6 +43,8 @@ export async function POST(request: NextRequest) {
       automatic_tax: {
         enabled: true,
       },
+      allow_promotion_codes: true, // Enable promo codes
+      discounts: [], // Allow discounts to be applied
     })
     
     return NextResponse.json({ sessionId: session.id })

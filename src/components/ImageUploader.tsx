@@ -22,6 +22,7 @@ export function ImageUploader({ maxFiles = 24, onUpload, tier }: ImageUploaderPr
   const [uploadError, setUploadError] = useState<string | null>(null)
 
   const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+    console.log('ImageUploader onDrop called', { acceptedFiles, rejectedFiles })
     setUploadError(null)
     
     if (rejectedFiles.length > 0) {
@@ -42,20 +43,26 @@ export function ImageUploader({ maxFiles = 24, onUpload, tier }: ImageUploaderPr
       })
     )
 
-    const totalFiles = [...files, ...newFiles]
-    if (totalFiles.length > maxFiles) {
-      setUploadError(`You can only upload up to ${maxFiles} files.`)
-      return
-    }
+    setFiles(currentFiles => {
+      const totalFiles = [...currentFiles, ...newFiles]
+      if (totalFiles.length > maxFiles) {
+        setUploadError(`You can only upload up to ${maxFiles} files.`)
+        return currentFiles
+      }
 
-    setFiles(totalFiles)
-    onUpload(totalFiles)
-  }, [files, maxFiles, onUpload])
+      console.log('Setting files and calling onUpload with:', totalFiles)
+      // Call onUpload with the new files
+      onUpload(totalFiles)
+      return totalFiles
+    })
+  }, [maxFiles, onUpload])
 
   const removeFile = (index: number) => {
-    const newFiles = files.filter((_, i) => i !== index)
-    setFiles(newFiles)
-    onUpload(newFiles)
+    setFiles(currentFiles => {
+      const newFiles = currentFiles.filter((_, i) => i !== index)
+      onUpload(newFiles)
+      return newFiles
+    })
   }
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
