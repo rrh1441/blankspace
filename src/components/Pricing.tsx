@@ -92,7 +92,7 @@ export function Pricing() {
                 </div>
               )}
 
-              <Card className={`h-full transition-all duration-300 hover:shadow-xl ${
+              <Card className={`h-full transition-all duration-300 hover:shadow-xl flex flex-col ${
                 tier.popular 
                   ? 'border-4 border-accent-primary shadow-lg scale-105' 
                   : 'border-2 border-black hover:border-accent-primary'
@@ -120,8 +120,8 @@ export function Pricing() {
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent>
-                  <ul className="space-y-3 mb-8">
+                <CardContent className="flex-1 flex flex-col">
+                  <ul className="space-y-3 mb-8 flex-1">
                     {tier.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-center gap-3">
                         <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
@@ -140,7 +140,7 @@ export function Pricing() {
                         : 'btn-primary'
                     }`}
                   >
-                    {selectedTier === tier.id ? 'Selected' : 'Choose Plan'}
+                    Get Started
                   </Button>
                 </CardContent>
               </Card>
@@ -148,12 +148,41 @@ export function Pricing() {
           ))}
         </div>
 
-        {/* FAQ Section */}
+        {/* Sample Download Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
+          className="text-center mt-16"
+          id="download-section"
+        >
+          <div className="bg-white rounded-2xl p-8 border-2 border-black max-w-2xl mx-auto">
+            <h3 className="text-2xl font-bold mb-4">
+              Get Our Yosemite National Park Coloring Book
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Download our sample coloring book featuring beautiful scenes from Yosemite National Park to see the amazing quality and detail of our line art.
+            </p>
+            <motion.a
+              href="/sample-book.pdf"
+              download="yosemite-coloring-book.pdf"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center btn-primary text-lg px-8 py-4 group"
+            >
+              <Download className="w-5 h-5 mr-2" />
+              Download Free Sample
+            </motion.a>
+          </div>
+        </motion.div>
+
+        {/* FAQ Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.6 }}
           className="mt-16 text-center"
         >
           <div className="bg-white rounded-2xl p-8 border-2 border-black max-w-3xl mx-auto">

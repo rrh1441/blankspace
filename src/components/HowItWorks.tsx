@@ -101,56 +101,19 @@ export function HowItWorks() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="text-center mt-16"
         >
-          <div className="bg-gradient-to-r from-accent-primary/10 to-accent-secondary/10 rounded-2xl p-8 border-2 border-black">
-            <h3 className="text-2xl font-bold mb-4">
-              Ready to Create Your First Coloring Book?
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Join thousands of happy customers who have transformed their photos into beautiful coloring books.
-            </p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="btn-primary text-lg px-8 py-4 group"
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  window.location.href = '/preview'
-                }
-              }}
-            >
-              Get Started Now
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </motion.button>
-          </div>
-        </motion.div>
-
-        {/* Sample Download Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-center mt-16"
-          id="download-section"
-        >
-          <div className="bg-gray-50 rounded-2xl p-8 border-2 border-gray-200">
-            <h3 className="text-2xl font-bold mb-4">
-              See What You&apos;ll Get
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Download our sample coloring book to see the amazing quality and detail of our AI-generated line art.
-            </p>
-            <motion.a
-              href="/sample-book.pdf"
-              download="sample-coloring-book.pdf"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center btn-primary text-lg px-8 py-4 group"
-            >
-              <Download className="w-5 h-5 mr-2" />
-              Download Sample Book
-            </motion.a>
-          </div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="btn-primary text-2xl px-12 py-6 group"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.location.href = '/preview'
+              }
+            }}
+          >
+            Make Your Book Now
+            <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
+          </motion.button>
         </motion.div>
       </div>
     </section>

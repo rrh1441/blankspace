@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { inter, amatic } from './fonts'
+import { Footer } from '@/components/Footer'
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${amatic.variable} antialiased`}>
         {children}
+        <Footer />
       </body>
     </html>
   );
