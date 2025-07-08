@@ -228,9 +228,6 @@ export function HeroSection() {
                         onSliderPositionChange={(position) => {
                           console.log('Slider position:', position)
                         }}
-                        onError={(error) => {
-                          console.error('ReactCompareImage error:', error)
-                        }}
                       />
                     </div>
                   )}
