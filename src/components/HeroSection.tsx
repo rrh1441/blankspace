@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { Upload, ArrowRight, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -50,10 +51,11 @@ function CustomImageSlider({ beforeImage, afterImage, beforeLabel, afterLabel }:
     >
       {/* After image (background) */}
       <div className="absolute inset-0">
-        <img
+        <Image
           src={afterImage}
           alt={afterLabel}
-          className="w-full h-full object-cover"
+          fill
+          className="object-cover"
           draggable={false}
         />
       </div>
@@ -65,10 +67,11 @@ function CustomImageSlider({ beforeImage, afterImage, beforeLabel, afterLabel }:
           clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)`
         }}
       >
-        <img
+        <Image
           src={beforeImage}
           alt={beforeLabel}
-          className="w-full h-full object-cover"
+          fill
+          className="object-cover"
           draggable={false}
         />
       </div>

@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Check, Star, Crown } from 'lucide-react'
+import { Check, Star, Crown, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -46,10 +45,8 @@ const tiers = [
 ]
 
 export function Pricing() {
-  const [selectedTier, setSelectedTier] = useState('digital')
 
   const handleSelectTier = (tierId: string) => {
-    setSelectedTier(tierId)
     // Navigate to upload page with selected tier
     if (typeof window !== 'undefined') {
       window.location.href = `/preview?tier=${tierId}`

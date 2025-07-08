@@ -54,7 +54,7 @@ export default function TermsOfService() {
             <ul className="list-disc ml-6 text-gray-700 mb-4">
               <li>Upload illegal, harmful, or offensive content</li>
               <li>Violate any laws or regulations</li>
-              <li>Infringe on others' intellectual property rights</li>
+              <li>Infringe on others&apos; intellectual property rights</li>
               <li>Distribute malware or harmful code</li>
             </ul>
           </section>
