@@ -3,8 +3,8 @@
 import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { ImageUploader } from '@/components/ImageUploader'
-import { PreviewSlider } from '@/components/PreviewSlider'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft, Upload, Wand2, Download } from 'lucide-react'
@@ -206,7 +206,7 @@ function PreviewPageContent() {
                     <div className="grid grid-cols-2 gap-4 mt-4">
                       {coverImages.map((img, index) => (
                         <div key={img.id} className="relative">
-                          <img src={img.url} alt={`Cover ${index + 1}`} className="w-full h-32 object-cover rounded" />
+                          <Image src={img.url} alt={`Cover ${index + 1}`} width={200} height={128} className="w-full h-32 object-cover rounded" />
                           <span className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 text-xs rounded">
                             {index === 0 ? 'Front' : 'Back'}
                           </span>
@@ -237,7 +237,7 @@ function PreviewPageContent() {
                       </p>
                       <div className="grid grid-cols-6 gap-2">
                         {insideImages.map((img) => (
-                          <img key={img.id} src={img.url} alt="Inside page" className="w-full h-16 object-cover rounded" />
+                          <Image key={img.id} src={img.url} alt="Inside page" width={64} height={64} className="w-full h-16 object-cover rounded" />
                         ))}
                       </div>
                       <div className="mt-6 flex justify-center">
@@ -278,7 +278,7 @@ function PreviewPageContent() {
                           }`}
                         >
                           <div className="flex items-center gap-4">
-                            <img src={design.previewUrl} alt={design.name} className="w-16 h-20 object-cover rounded" />
+                            <Image src={design.previewUrl} alt={design.name} width={64} height={80} className="w-16 h-20 object-cover rounded" />
                             <div>
                               <h4 className="font-medium">{design.name}</h4>
                               <p className="text-sm text-gray-600">Cover template style</p>
@@ -304,7 +304,7 @@ function PreviewPageContent() {
                     <h3 className="text-lg font-semibold mb-4">Cover Preview</h3>
                     <div className="bg-gray-100 rounded-lg p-6 text-center">
                       <div className="relative inline-block">
-                        <img src={selectedCover.previewUrl} alt="Cover preview" className="w-48 h-60 object-cover rounded-lg shadow-lg" />
+                        <Image src={selectedCover.previewUrl} alt="Cover preview" width={192} height={240} className="w-48 h-60 object-cover rounded-lg shadow-lg" />
                         <div className="absolute bottom-4 left-4 right-4 bg-white/90 p-2 rounded">
                           <p className="font-bold text-sm">{coverTitle}</p>
                         </div>
