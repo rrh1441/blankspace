@@ -22,7 +22,6 @@ export function ImageUploader({ maxFiles = 24, onUpload, tier }: ImageUploaderPr
   const [uploadError, setUploadError] = useState<string | null>(null)
 
   const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-    console.log('ImageUploader onDrop called', { acceptedFiles, rejectedFiles })
     setUploadError(null)
     
     if (rejectedFiles.length > 0) {
@@ -50,7 +49,6 @@ export function ImageUploader({ maxFiles = 24, onUpload, tier }: ImageUploaderPr
         return currentFiles
       }
 
-      console.log('Setting files and calling onUpload with:', totalFiles)
       // Call onUpload with the new files
       onUpload(totalFiles)
       return totalFiles

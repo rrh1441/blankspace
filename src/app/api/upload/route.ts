@@ -49,6 +49,14 @@ export async function POST(request: NextRequest) {
       const { data: publicData } = supabase.storage
         .from(BUCKET_NAME)
         .getPublicUrl(`uploads/${uniqueFileName}`)
+        
+      return NextResponse.json({
+        success: true,
+        fileName: uniqueFileName,
+        publicUrl: publicData.publicUrl,
+        size: file.size,
+        type: file.type
+      })
     } catch (supabaseError) {
       console.error('Supabase configuration error:', supabaseError)
       // Demo mode fallback
@@ -61,14 +69,6 @@ export async function POST(request: NextRequest) {
         demoMode: true
       })
     }
-    
-    return NextResponse.json({
-      success: true,
-      fileName: uniqueFileName,
-      publicUrl: publicData.publicUrl,
-      size: file.size,
-      type: file.type
-    })
     
   } catch (error) {
     console.error('Upload error:', error)
